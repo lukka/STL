@@ -1,0 +1,18 @@
+# Build STL targeting x64, arm64, x86, arm.
+
+jobs:
+- template: ado/run_build.yml
+  parameters:
+    targetPlatform: x64
+
+- template: ado/run_build.yml
+  parameters:
+    targetPlatform: arm64
+
+- template: ado/run_build.yml
+  parameters:
+    targetPlatform: x86
+
+- template: ado/run_build.yml
+  parameters:
+    targetPlatform: arm

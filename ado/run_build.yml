@@ -1,0 +1,45 @@
+parameters:
+  targetPlatform: 'x64'
+
+jobs:
+- job: vs2019_hosted_${{ parameters.targetPlatform }}
+  pool:
+    name: Hosted Windows 2019 with VS2019
+    #name: Default
+
+  variables:
+    vcpkgLocation: '$(Build.SourcesDirectory)/vcpkg'
+    vcpkgResponseFile: $(Build.SourcesDirectory)/vcpkg_windows.txt
+  steps:
+    - checkout: self
+      submodules: recursive
+    - task: PowerShell@2
+      displayName: 'Install MSVC preview'
+      condition: or(contains(variables['Agent.Name'], 'Azure Pipelines'), contains(variables['Agent.Name'], 'Hosted Agent'))
+      inputs:
+        targetType: filePath
+        filePath: $(Build.SourcesDirectory)/ado/install_msvc_preview.ps1
+    - task: CacheBeta@0
+      displayName: Cache vcpkg
+      inputs:
+        key: $(vcpkgResponseFile) | $(Build.SourcesDirectory)/.git/modules/vcpkg/HEAD
+        path: '$(vcpkgLocation)'
+    - task: lucappa.cmake-ninja-vcpkg-tasks.d855c326-b1c0-4d6f-b1c7-440ade6835fb.run-vcpkg@0
+      displayName: 'Run vcpkg to install boost-build'
+      inputs:
+        vcpkgArguments: 'boost-build:x86-windows'
+        vcpkgDirectory: '$(vcpkgLocation)'
+    - task: lucappa.cmake-ninja-vcpkg-tasks.d855c326-b1c0-4d6f-b1c7-440ade6835fb.run-vcpkg@0
+      displayName: 'Run vcpkg'
+      inputs:
+        vcpkgArguments: '@$(vcpkgResponseFile)'
+        vcpkgDirectory: '$(vcpkgLocation)'
+        vcpkgTriplet: ${{ parameters.targetPlatform }}-windows
+    - task: lucappa.cmake-ninja-vcpkg-tasks.f2b1ec7d-bc54-4cc8-b9ed-1bc7f37c9dc6.run-cmake@0
+      displayName: 'Run CMake with Ninja'
+      enabled: true
+      inputs:
+        cmakeListsTxtPath: 'CMakeSettings.json'
+        useVcpkgToolchainFile: true
+        configurationRegexFilter: '.*${{ parameters.targetPlatform }}.*'
+        buildDirectory: $(Build.ArtifactStagingDirectory)/${{ parameters.targetPlatform }}
