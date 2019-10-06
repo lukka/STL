@@ -1,0 +1,5 @@
+jobs:
+- template: azure-devops/run_jobs.yml
+  parameters:
+    pool:
+      name: 'default'
