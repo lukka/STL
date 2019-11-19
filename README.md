@@ -3,7 +3,11 @@
 This is the official repository for Microsoft's implementation of the C++ Standard Library (also known as the STL),
 which ships as part of the MSVC toolset and the Visual Studio IDE.
 
-[![Build Status](https://dev.azure.com/vclibs/STL/_apis/build/status/microsoft.STL?branchName=master)][Pipelines]
+[![Build Status](https://dev.azure.com/CppBuild/CppBuildTasks/_apis/build/status/lukka.STL?branchName=master)][Pipelines]
+
+Docker based build on self hosted agent: [![Build Status](https://dev.azure.com/CppBuild/CppBuildTasks/_apis/build/status/MSVC_STL/lukka.docker.selfhosted.STL?branchName=master)](https://dev.azure.com/CppBuild/CppBuildTasks/_build/latest?definitionId=36&branchName=master)
+
+Docker based build on MS Hosted agent: [![Build Status](https://dev.azure.com/CppBuild/CppBuildTasks/_apis/build/status/MSVC_STL/lukka.docker.mshosted.STL?branchName=master)](https://dev.azure.com/CppBuild/CppBuildTasks/_build/latest?definitionId=37&branchName=master)
 
 # What This Repo Is Useful For
 
