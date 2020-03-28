@@ -27,27 +27,28 @@ jobs:
         key: $(vcpkgResponseFile) | "${{ parameters.targetPlatform }}" | $(Build.SourcesDirectory)/.git/modules/vcpkg/HEAD
         path: '$(vcpkgLocation)'
         cacheHitVar: CACHE_RESTORED
-    - task: lucappa.cmake-ninja-vcpkg-tasks.d855c326-b1c0-4d6f-b1c7-440ade6835fb.run-vcpkg@0
+    - task: lucappa.cmake-ninja-vcpkg-tasks-dev.a855c326-b1c0-4d6f-b1c7-440ade6835fb.run-vcpkg@0
       displayName: 'Run vcpkg to Install boost-build'
       condition: and(ne(variables.CACHE_RESTORED, 'true'), contains('${{ parameters.targetPlatform }}', 'arm'))
       timeoutInMinutes: 10
       inputs:
         vcpkgArguments: 'boost-build:x86-windows'
         vcpkgDirectory: '$(vcpkgLocation)'
-    - task: lucappa.cmake-ninja-vcpkg-tasks.d855c326-b1c0-4d6f-b1c7-440ade6835fb.run-vcpkg@0
+    - task: lucappa.cmake-ninja-vcpkg-tasks-dev.a855c326-b1c0-4d6f-b1c7-440ade6835fb.run-vcpkg@0
       displayName: 'Run vcpkg'
       timeoutInMinutes: 10
       inputs:
         vcpkgArguments: '@$(vcpkgResponseFile)'
         vcpkgDirectory: '$(vcpkgLocation)'
         vcpkgTriplet: ${{ parameters.targetPlatform }}-windows
-    - task: lucappa.cmake-ninja-vcpkg-tasks.f2b1ec7d-bc54-4cc8-b9ed-1bc7f37c9dc6.run-cmake@0
+    - task: lucappa.cmake-ninja-vcpkg-tasks-dev.a2b1ec7d-bc54-4cc8-b9ed-1bc7f37c9dc6.run-cmake@0
       displayName: 'Build Support Tools'
       timeoutInMinutes: 2
       condition: eq('${{ parameters.targetPlatform }}', 'x64')
       inputs:
         cmakeListsTxtPath: 'tools/CMakeSettings.json'
         useVcpkgToolchainFile: true
+
         configurationRegexFilter: '.*x64-Release.*'
         buildDirectory: $(Build.ArtifactStagingDirectory)/tools
     - task: BatchScript@1
@@ -66,7 +67,7 @@ jobs:
         filename: 'azure-devops/validate-files.cmd'
         failOnStandardError: true
         arguments: '$(Build.ArtifactStagingDirectory)/tools/validate/validate.exe'
-    - task: lucappa.cmake-ninja-vcpkg-tasks.f2b1ec7d-bc54-4cc8-b9ed-1bc7f37c9dc6.run-cmake@0
+    - task: lucappa.cmake-ninja-vcpkg-tasks-dev.a2b1ec7d-bc54-4cc8-b9ed-1bc7f37c9dc6.run-cmake@0
       displayName: 'Build the STL'
       timeoutInMinutes: 10
       inputs:

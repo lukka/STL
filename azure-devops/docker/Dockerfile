@@ -15,9 +15,5 @@ RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" `
     -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command `
     "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" `
     && SETX PATH "%PATH%;%ALLUSERSPROFILE%\chocolatey\bin;%PROGRAMFILES%\cmake\bin"
-#RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" `
-    #-NoProfile -InputFormat None -ExecutionPolicy Bypass -Command `
-    #"iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')#)" `
-    #&& SETX PATH "%PATH%;%ALLUSERSPROFILE%\chocolatey\bin;%PROGRAMFILES%\cmake\bin"
 RUN choco install git cmake llvm -y -v
 CMD ["powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
