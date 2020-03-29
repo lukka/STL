@@ -5,10 +5,12 @@ jobs:
 - job: ${{ parameters.targetPlatform }}
   timeoutInMinutes: 360
   pool:
-    name: StlBuild-2020-03-28
+    name: Default
+    #name: StlBuild-2020-03-28
 
   variables:
     vcpkgLocation: '$(Build.SourcesDirectory)/vcpkg'
+    #vcpkgResponseFile: $(Build.SourcesDirectory)/azure-devops/vcpkg_windows.txt
   steps:
     - checkout: self
       clean: true
@@ -20,7 +22,7 @@ jobs:
         key: '"${{ parameters.targetPlatform }}" | $(Build.SourcesDirectory)/.git/modules/vcpkg/HEAD | "2020-03-01.01"'
         path: '$(vcpkgLocation)/installed'
         cacheHitVar: CACHE_RESTORED
-    - task: run-vcpkg@0
+    - task: lucappa.cmake-ninja-vcpkg-tasks-dev.a855c326-b1c0-4d6f-b1c7-440ade6835fb.run-vcpkg@0
       displayName: 'Run vcpkg to Install boost-build'
       condition: and(ne(variables.CACHE_RESTORED, 'true'), contains('${{ parameters.targetPlatform }}', 'arm'))
       timeoutInMinutes: 10
@@ -28,14 +30,14 @@ jobs:
         vcpkgArguments: 'boost-build'
         vcpkgDirectory: '$(vcpkgLocation)'
         vcpkgTriplet: 'x86-windows'
-    - task: run-vcpkg@0
+    - task: lucappa.cmake-ninja-vcpkg-tasks-dev.a855c326-b1c0-4d6f-b1c7-440ade6835fb.run-vcpkg@0
       displayName: 'Run vcpkg'
       timeoutInMinutes: 10
       inputs:
         vcpkgArguments: 'boost-math'
         vcpkgDirectory: '$(vcpkgLocation)'
         vcpkgTriplet: '${{ parameters.targetPlatform }}-windows'
-    - task: run-cmake@0
+    - task: lucappa.cmake-ninja-vcpkg-tasks-dev.a2b1ec7d-bc54-4cc8-b9ed-1bc7f37c9dc6.run-cmake@0
       displayName: 'Build Support Tools'
       timeoutInMinutes: 2
       condition: eq('${{ parameters.targetPlatform }}', 'x64')
@@ -68,7 +70,7 @@ jobs:
         script: |
           $testParallelism = $env:NUMBER_OF_PROCESSORS - 2
           Write-Output "##vso[task.setvariable variable=testParallelism;]$testParallelism"
-    - task: run-cmake@0
+    - task: lucappa.cmake-ninja-vcpkg-tasks-dev.a2b1ec7d-bc54-4cc8-b9ed-1bc7f37c9dc6.run-cmake@0
       displayName: 'Build the STL'
       timeoutInMinutes: 10
       inputs:
